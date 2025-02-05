@@ -49,17 +49,12 @@ class Slider{
   }
  
   void mouseAccion(){
+
     //invocamos todas las funciones
     mouseEncima();
     mousePresionado();
     mouseSuelto();
     
-    //Modificamos el cursor cuando el mouse está sobre la barra
-    if (mouseSobreBarra){
-      cursor(HAND);
-    } else {
-      cursor(ARROW);
-    }
   }
  
   //¿Está el mouse sobre la barra?
