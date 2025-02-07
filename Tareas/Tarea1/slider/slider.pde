@@ -20,18 +20,16 @@ class Slider{
  
   //CONSTRUCTOR
   //Parámetros: coordenadas x e y, longitud
-  Slider(int _x, int _y, int _l){
+  Slider(int _x, int _y, int _l, int inicio){
     //Inicializamos todas las variables
       barraX = _x;
       barraY = _y;
       longitud = _l;
-      sliderX = _x;
+      sliderX = _x + (inicio * _l / 100);
       sliderY = _y;
- 
       mouseSobreBarra = false;
       isPressed = false;
-    
-      valor = 1;
+      valor =  inicio;
   }
  
   //MÉTODOS
@@ -53,13 +51,6 @@ class Slider{
     mouseEncima();
     mousePresionado();
     mouseSuelto();
-    
-    //Modificamos el cursor cuando el mouse está sobre la barra
-    if (mouseSobreBarra){
-      cursor(HAND);
-    } else {
-      cursor(ARROW);
-    }
   }
  
   //¿Está el mouse sobre la barra?
