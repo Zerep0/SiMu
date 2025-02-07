@@ -2,9 +2,9 @@ Slider s, r, t;
 
 void setup() {
   size(400, 400);
-  s = new Slider(50, 250, 200); // Slider para el ángulo de las cejas
-  r = new Slider(50, 280, 200); // Slider para el color de la cara
-  t = new Slider(50, 310, 200); // Slider para la posición de la boca
+  s = new Slider(100, 250, 200, 50); // Slider para el ángulo de las cejas
+  r = new Slider(100, 280, 200, 50); // Slider para el color de la cara
+  t = new Slider(100, 310, 200, 50); // Slider para la posición de la boca
 }
 
 void draw() {
@@ -12,31 +12,41 @@ void draw() {
   
   // Obtener valores de los sliders
   float cejaAngulo = map(s.getValor(), 1, 100, -PI/4, PI/4);
-  float colorCara = map(r.getValor(), 1, 100, 100, 255);
-  float bocaPos = map(t.getValor(), 1, 100, 160, 200);
+  float colorValor = constrain(r.getValor(), 1, 100);
+
+  
+  // Interpolación de colores (amarillo -> azul -> rojo)
+  float rColor, gColor, bColor;
+  if (colorValor <= 50) {
+    rColor = map(colorValor, 0, 50, 255, 0);
+    gColor = map(colorValor, 0, 50, 255, 0);
+    bColor = map(colorValor, 0, 50, 0, 255);
+  } else {
+    rColor = map(colorValor, 50, 100, 0, 255);
+    gColor = 0;
+    bColor = map(colorValor, 50, 100, 255, 0);
+  }
   
   // Dibujar la cara
-  fill(colorCara, colorCara, 0);
+  stroke(1);
+  fill(rColor, gColor, bColor);
   ellipse(200, 150, 150, 150);
   
   // Ojos
   fill(255);
-  ellipse(180, 130, 30, 30);
-  ellipse(220, 130, 30, 30);
+  ellipse(180, 150, 40, 40);
+  ellipse(220, 150, 40, 40);
   fill(0);
-  ellipse(185, 130, 10, 10);
-  ellipse(225, 130, 10, 10);
+  ellipse(180, 150, 10, 10);
+  ellipse(220, 150, 10, 10);
   
   // Cejas con ángulo más pronunciado
   stroke(0);
   strokeWeight(3);
-  line(165, 110 + tan(cejaAngulo) * 10, 195, 110 - tan(cejaAngulo) * 10);
-  line(205, 110 - tan(cejaAngulo) * 10, 235, 110 + tan(cejaAngulo) * 10);
+  line(165, 100 + tan(cejaAngulo) * 10, 195, 100 - tan(cejaAngulo) * 10);
+  line(205, 100 - tan(cejaAngulo) * 10, 235, 100 + tan(cejaAngulo) * 10);
   
-  // Boca más abajo
-  noFill();
-  strokeWeight(2);
-  arc(200, bocaPos, 40, 20, 0, PI);
+
   
   // Dibujar sliders
   s.dibujar();
