@@ -1,0 +1,2 @@
+Profe, he buscado como implementar los métodos de un slider para asi refactorizar código y he añadido los que me interesan. Así el código es más legible.
+Gracias por su atención.
