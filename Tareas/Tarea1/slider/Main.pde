@@ -10,6 +10,11 @@ void setup() {
 void draw() {
   background(255);
   
+  // Dibujar sliders
+  s.dibujar();
+  r.dibujar();
+  t.dibujar();
+  
   // Obtener valores de los sliders, Quiero que vaya de -45 grados a 45 grados
   float cejaAngulo = map(s.getValor(), 1, 100, -PI/4, PI/4);
   float colorValor = constrain(r.getValor(), 1, 100);
@@ -61,10 +66,4 @@ void draw() {
   curveVertex(x3, y3); // Extremo derecho
   curveVertex(x3, y3); 
   endShape();
-
-  
-  // Dibujar sliders
-  s.dibujar();
-  r.dibujar();
-  t.dibujar();
 }
