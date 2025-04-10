@@ -55,7 +55,7 @@ class Beru extends Summon {
       if (keyCode == LEFT) manualRotation -= 0.04;
       if (keyCode == RIGHT) manualRotation += 0.04;
 
-      manualRotation = constrain(manualRotation, -PI/8, PI/8);
+      manualRotation = manualRotation % TWO_PI;
       baseX = constrain(baseX, 0, width - w);
       baseY = constrain(baseY, 0, height - h);
     }
@@ -108,7 +108,8 @@ class Beru extends Summon {
       y = baseY + controlTransition * (noiseY + circY);
 
       float noiseRot = map(noise(noiseOffsetX, time * 1.5), 0, 1, -PI/8, PI/8);
-      rotation = constrain(noiseRot * controlTransition + manualRotation, -PI/4, PI/4);
+      float autoRotation = constrain(noiseRot * controlTransition, -PI/4, PI/4);
+      rotation = autoRotation + manualRotation;
     }
   }
 

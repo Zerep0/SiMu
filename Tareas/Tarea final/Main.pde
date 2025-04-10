@@ -1,14 +1,15 @@
-RainSystem rain;
+public RainSystem rain;
 Ground ground;
 SungJinWoo sung;
 LightningSystem lightning;
 SummonSystem summonSystem;
 
 PImage dialogo;
+PImage dialogo1;
 PImage guia;
 
 void setup() {
-  size(1000, 700);
+  size(1000, 720);
   // Inicializa el sistema de lluvia
   rain = new RainSystem();
   ground = new Ground();
@@ -25,8 +26,11 @@ void setup() {
   dialogo = loadImage("monologo1.png");
   dialogo.resize((int)(dialogo.width * 0.7), (int)(dialogo.height * 0.7));
   
+  dialogo1 = loadImage("monologo2.png");
+  dialogo1.resize((int)(dialogo1.width * 0.7), (int)(dialogo1.height * 0.7));
+  
   guia = loadImage("guia.png");
-  guia.resize((int)(guia.width * 0.6), (int)(guia.height * 0.6));
+  guia.resize((int)(guia.width * 0.7), (int)(guia.height * 0.7));
   
 
 }
@@ -48,7 +52,11 @@ void draw() {
   sung.display();
   
   // imprimimos el dialogo
-  image(dialogo, sung.x - 20, sung.y + 160);
+  if (summonSystem.active) {
+    image(dialogo1, sung.x - 20, sung.y + 160);
+  } else {
+    image(dialogo, sung.x - 20, sung.y + 160);
+  }
   
   // mostrar guia
   image(guia, 20, 20);
@@ -67,7 +75,7 @@ void mousePressed() {
     summonSystem.toggleSummons();
   }
   
-  // Delegar manejo de arrastre para Beru:
+  // Delegar manejo de arrastre
   summonSystem.handleMousePressed();
 }
 
@@ -79,19 +87,34 @@ void mouseReleased() {
   summonSystem.handleMouseReleased();
 }
 
-void pintarLuna()
-{
-    noStroke();
-  // Dibujamos el glow: elipses concéntricas con mayor radio y opacidad decreciente
-  for (int r = 110; r <= 150; r += 10) {
-    // Mapear la opacidad: cuanto más grande el radio, menor la opacidad.
-    // Ajustamos los valores de mapeo para este rango.
-    float alpha = map(r, 110, 150, 50, 0);
-    fill(255, 200, 100, alpha);
-    ellipse(700, 200, r, r);
+float lunaLatido = 0;
+boolean lunaExpande = true;
+
+void pintarLuna() {
+  noStroke();
+  float centerX = 700;
+  float centerY = 200;
+
+  // Latido más suave y lento
+  float latidoVelocidad = 0.1;  // más lento
+  float latidoMax = 6;
+
+  if (lunaExpande) {
+    lunaLatido += latidoVelocidad;
+    if (lunaLatido > latidoMax) lunaExpande = false;
+  } else {
+    lunaLatido -= latidoVelocidad;
+    if (lunaLatido < -latidoMax) lunaExpande = true;
   }
-  
-  // Dibujamos la elipse principal (luz amarilla clara)
-  fill(255, 200, 100);
-  ellipse(700, 200, 100, 100);
+
+  // Glow dinámico, suave
+  for (int r = 110; r <= 150; r += 10) {
+    float alpha = map(r, 110, 150, 50, 0);
+    fill(255, 220, 150, alpha + random(-5, 5));  // ligera variación
+    ellipse(centerX, centerY, r + lunaLatido, r + lunaLatido);
+  }
+
+  // Núcleo de la luna
+  fill(255, 240, 180);
+  ellipse(centerX, centerY, 100 + lunaLatido * 0.4, 100 + lunaLatido * 0.4);
 }

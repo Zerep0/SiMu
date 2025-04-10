@@ -1,7 +1,7 @@
 class SummonSystem {
-  String[] summonFiles = { "igris.png", "iron.png", "tank.png", "tusk.png" };
+
   float scaleFactor = 0.5;
-  PImage[] summonImages;
+
 
   ArrayList<Summon> activeSummons;
   float[] offsets = { -250, -125, 150, 275 };
@@ -13,11 +13,6 @@ class SummonSystem {
 
   SummonSystem(SungJinWoo sung) {
     this.sung = sung;
-    summonImages = new PImage[summonFiles.length];
-    for (int i = 0; i < summonFiles.length; i++) {
-      summonImages[i] = loadImage(summonFiles[i]);
-      summonImages[i].resize((int)(summonImages[i].width * scaleFactor), (int)(summonImages[i].height * scaleFactor));
-    }
     activeSummons = new ArrayList<Summon>();
   }
 
@@ -29,13 +24,12 @@ class SummonSystem {
       shuffled[i] = shuffled[r];
       shuffled[r] = temp;
     }
-
     activeSummons.clear();
-    activeSummons.add(new Igris(summonImages[0], sung.x + shuffled[0], sung.y + 20));
-    activeSummons.add(new Iron(summonImages[1], sung.x + shuffled[1], sung.y + 20));
-    activeSummons.add(new Tank(summonImages[2], sung.x + shuffled[2], sung.y + 20));
+    activeSummons.add(new Igris(sung.x + shuffled[0], sung.y + 20));
+    activeSummons.add(new Iron(sung.x + shuffled[1], sung.y + 20));
+    activeSummons.add(new Tank(sung.x + shuffled[2], sung.y + 20));
     float groundY = height - ground.groundHeight;
-    activeSummons.add(new Tusk(summonImages[3], sung.x + shuffled[3], sung.y + 20, groundY));
+    activeSummons.add(new Tusk(sung.x + shuffled[3], sung.y + 20, groundY));
     activeSummons.add(new Beru(sung.x, sung.y - 200));
   }
 
@@ -77,6 +71,9 @@ class SummonSystem {
       if (s instanceof Beru && ((Beru)s).isMouseOver()) {
         ((Beru)s).startDrag();
       }
+      if (s.isMouseOver()) {
+        s.onClick();  // Ejecuta la habilidad de cada Summon que esté bajo el mouse
+      }
     }
   }
 
@@ -95,15 +92,25 @@ class SummonSystem {
       }
     }
   }
+  
 }
 
 // Clase base: Summon
 abstract class Summon {
   float alpha = 255;
+  PImage imgNormal;   // Versión normal
+  PImage imgBright;   // Versión con brillo
+  float x, y;         // Posición
+  float w, h;         // Tamaño
 
+  // Actualiza el estado interno (movimiento, etc.)
   abstract void update();
+
+  // La mayoría de la lógica de display estará en la clase concreta, pero
+  // si quieres un display base, puedes hacerlo también
   abstract void display();
 
+  // Efecto fade (ya lo tenías)
   void startFade(float speed) {
     alpha -= speed;
     if (alpha < 0) alpha = 0;
@@ -111,5 +118,16 @@ abstract class Summon {
 
   boolean isFaded() {
     return alpha <= 0;
+  }
+
+  // Método para detectar si el mouse está dentro (simple bounding box)
+  boolean isMouseOver() {
+    return (mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h);
+  }
+
+  // Al hacer clic sobre el personaje, lanzará su habilidad
+  // (sobrescribe en cada clase concreta si quieres distinto comportamiento)
+  void onClick() {
+    // Por defecto, no hace nada
   }
 }
